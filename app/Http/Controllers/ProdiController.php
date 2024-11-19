@@ -7,10 +7,14 @@ use Illuminate\Http\Request;
 
 class ProdiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $prodis = Prodi::orderBy('id', 'desc')->get();
-        return view('prodi.index', compact('prodis'));
+        $search = $request->input('search');
+        $prodis = Prodi::when($search, function ($query, $search) {
+            return $query->where('nama', 'like', '%' . $search . '%');
+        })->orderBy('id', 'desc')->get();
+
+        return view('prodi.index', compact('prodis', 'search'));
     }
 
     public function create()
@@ -21,12 +25,13 @@ class ProdiController extends Controller
     public function save(Request $request)
     {
         $request->validate([
-            'nama' => 'required'
+            'nama' => 'required|string|max:255'
+        ], [
+            'nama.required' => 'Nama Program Studi wajib diisi.',
+            'nama.max' => 'Nama Program Studi maksimal 255 karakter.',
         ]);
 
-        Prodi::create([
-            'nama' => $request->nama
-        ]);
+        Prodi::create(['nama' => $request->nama]);
 
         return redirect()->route('/prodi')->with('success', 'Program Studi berhasil ditambahkan');
     }
@@ -40,14 +45,23 @@ class ProdiController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama' => 'required'
+            'nama' => 'required|string|max:255'
+        ], [
+            'nama.required' => 'Nama Program Studi wajib diisi.',
+            'nama.max' => 'Nama Program Studi maksimal 255 karakter.',
         ]);
 
         $prodi = Prodi::findOrFail($id);
-        $prodi->update([
-            'nama' => $request->nama
-        ]);
+        $prodi->update(['nama' => $request->nama]);
 
-        return redirect()->route('/prodi')->with('success', 'Program Studi berhasil diupdated');
+        return redirect()->route('/prodi')->with('success', 'Program Studi berhasil diupdate');
+    }
+
+    public function delete($id)
+    {
+        $prodi = Prodi::findOrFail($id);
+        $prodi->delete();
+
+        return redirect()->route('/prodi')->with('success', 'Data Program Studi berhasil dihapus');
     }
 }

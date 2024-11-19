@@ -40,8 +40,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $prodi->nama }}</td>
                                     <td>
-                                        <a
-                                            href="{{ route('prodi/edit', $prodi->id) }}"class="btn btn-secondary">Edit</a>
+                                        <a href="#"class="btn btn-secondary">Edit</a>
                                         <form action="{{ route('prodi/delete', $prodi->id) }}" method="POST"
                                             class="d-inline">
                                             @csrf
@@ -59,4 +58,3 @@
         </div>
     </div>
     </x-app-layout>
-    
