@@ -25,15 +25,14 @@ class ProdiController extends Controller
     public function save(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:255'
-        ], [
-            'nama.required' => 'Nama Program Studi wajib diisi.',
-            'nama.max' => 'Nama Program Studi maksimal 255 karakter.',
+            'nama' => 'required'
         ]);
-
-        Prodi::create(['nama' => $request->nama]);
-
-        return redirect()->route('/prodi')->with('success', 'Program Studi berhasil ditambahkan');
+    
+        Prodi::create([
+            'nama' => $request->nama
+        ]);
+    
+        return redirect()->route('prodi')->with('success', 'Program Studi berhasil ditambahkan');
     }
 
     public function edit($id)
@@ -45,16 +44,15 @@ class ProdiController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama' => 'required|string|max:255'
-        ], [
-            'nama.required' => 'Nama Program Studi wajib diisi.',
-            'nama.max' => 'Nama Program Studi maksimal 255 karakter.',
+            'nama' => 'required'
+        ]);
+    
+        $prodi = Prodi::findOrFail($id);
+        $prodi->update([
+            'nama' => $request->nama
         ]);
 
-        $prodi = Prodi::findOrFail($id);
-        $prodi->update(['nama' => $request->nama]);
-
-        return redirect()->route('/prodi')->with('success', 'Program Studi berhasil diupdate');
+        return redirect()->route('prodi')->with('success', 'Program Studi berhasil diupdate');
     }
 
     public function delete($id)
@@ -62,6 +60,6 @@ class ProdiController extends Controller
         $prodi = Prodi::findOrFail($id);
         $prodi->delete();
 
-        return redirect()->route('/prodi')->with('success', 'Data Program Studi berhasil dihapus');
+        return redirect()->route('prodi')->with('success', 'Data Program Studi berhasil dihapus');
     }
 }
